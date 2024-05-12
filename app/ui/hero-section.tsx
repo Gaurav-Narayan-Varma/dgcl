@@ -1,7 +1,7 @@
 import HeroTextBlockA from "./hero-text-block-a";
-import NavBar from "./nav-bar";
 import ActionButton from "./action-button";
 import PlayVideo from "./play-video";
+import Image from "next/image";
 
 export default function HeroSection() {
   return (
@@ -11,14 +11,17 @@ export default function HeroSection() {
         height: "1483.15px",
         backgroundImage: "url('/pattern-6.png')",
         backgroundColor: "#f0f3f9",
-        paddingLeft: "15px",
-        paddingRight: "15px",
       }}
     >
-      <NavBar />
       <HeroTextBlockA />
       <ActionButton />
       <PlayVideo />
+      <Image
+        src="/Aditi-1.png"
+        width="330"
+        height="1"
+        alt="CEO profile shot 1"
+      />
     </main>
   );
 }

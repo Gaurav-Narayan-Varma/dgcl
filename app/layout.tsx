@@ -17,7 +17,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={montserrat.className}>{children}</body>
+      <body
+        className={`relative ${montserrat.className}`}
+        style={{
+          backgroundImage: "url('/pattern-6.png')",
+          backgroundColor: "#f0f3f9",
+          paddingLeft: "15px",
+          paddingRight: "15px",
+        }}
+      >
+        <NavBar />
+        {children}
+      </body>
     </html>
   );
 }
