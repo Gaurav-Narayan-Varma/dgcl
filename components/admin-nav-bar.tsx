@@ -19,9 +19,12 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 
-import Image from "next/image";
+import { Button } from "./ui/button";
 
-export default function NavBar() {
+import Image from "next/image";
+import Link from "next/link";
+
+export default function AdminNavBar() {
   return (
     <main
       id="navbar"
@@ -43,19 +46,8 @@ export default function NavBar() {
               alt="DGCL logo"
             />
           </div>
-          <div>
-            <div
-              className="font-bold text-3xl tracking-widest"
-              style={{ height: "30px" }}
-            >
-              DGCL
-            </div>
-            <div
-              className="italic"
-              style={{ width: "109px", fontSize: ".6rem" }}
-            >
-              Fractional excellence
-            </div>
+          <div className="flex items-center">
+            <div className="font-semibold text-2xl">DGCL Admin</div>
           </div>
         </div>
       </section>
@@ -91,6 +83,25 @@ export default function NavBar() {
                   </NavigationMenuLink>
                   <NavigationMenuLink href="/">
                     Lead Generation
+                  </NavigationMenuLink>
+                  <NavigationMenuLink
+                    href="/admin/create-page"
+                    className="flex justify-center"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
                   </NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
