@@ -12,15 +12,14 @@ import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import ToolbarPlugin from "./ToolBarPlugin";
 import ExampleTheme from "./ExampleTheme";
 import "@/styles/editor.css";
+import { Button } from "../ui/button";
+import { useRef } from "react";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { EditorState } from "lexical";
 
-const theme = {
-  // Theme styling goes here
-  //...
-};
+const theme = {};
 
-// Catch any errors that occur during Lexical updates and log them
-// or throw them as needed. If you don't throw them, Lexical will
-// try to recover gracefully without losing user data.
 function onError(error: any) {
   console.error(error);
 }
@@ -29,16 +28,18 @@ function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
 }
 
-const editorConfig = {
-  namespace: "React.js Demo",
-  nodes: [],
-  // Handling of errors during update
-  onError(error: Error) {
-    throw error;
-  },
-  // The editor theme
-  theme: ExampleTheme,
-};
+function MyOnChangePlugin(props: {
+  onChange: (editorState: any) => void;
+}): null {
+  const [editor] = useLexicalComposerContext();
+  const { onChange } = props;
+  useEffect(() => {
+    return editor.registerUpdateListener((editorState) => {
+      onChange(editorState);
+    });
+  }, [onChange, editor]);
+  return null;
+}
 
 export default function Editor() {
   const initialConfig = {
@@ -48,7 +49,7 @@ export default function Editor() {
   };
 
   return (
-    <LexicalComposer initialConfig={editorConfig}>
+    <LexicalComposer initialConfig={initialConfig}>
       <div className="editor-container">
         <ToolbarPlugin />
 
@@ -59,6 +60,12 @@ export default function Editor() {
             ErrorBoundary={LexicalErrorBoundary}
           />
           <HistoryPlugin />
+          <MyOnChangePlugin
+            onChange={(editorState) => {
+              const text = editorState?.editorState?._nodeMap?.get("3")?.__text;
+              text && console.log(text);
+            }}
+          />
           <AutoFocusPlugin />
         </div>
       </div>
