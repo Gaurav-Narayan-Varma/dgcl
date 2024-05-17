@@ -1,5 +1,6 @@
 import { signOut } from "@/auth";
 import PowerIcon from "@heroicons/react/24/outline/PowerIcon";
+import { headers } from "next/headers";
 
 export default function AdminHome() {
   return (
@@ -8,9 +9,13 @@ export default function AdminHome() {
       <form
         action={async () => {
           "use server";
+          const origin = headers().get("origin");
+          console.log("Headers:", headers());
+          console.log("Origin:", origin);
+
           await signOut({
             redirect: true,
-            redirectTo: "http://localhost:3000/login-admin",
+            redirectTo: `${origin}/login-admin`,
           });
         }}
       >
