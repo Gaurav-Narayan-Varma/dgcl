@@ -46,7 +46,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(
           buttonVariants({ variant, size, className }),
-          "bg-white border border-slate-300 text-slate-600 h-6"
+          "bg-white border border-slate-300 text-slate-600 h-8"
         )}
         ref={ref}
         {...props}

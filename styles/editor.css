@@ -44,26 +44,6 @@ h1 {
   text-align: right;
 }
 
-.editor-container {
-  margin: 20px auto 20px auto;
-  border-radius: 2px;
-  max-width: 600px;
-  color: #000;
-  position: relative;
-  line-height: 20px;
-  font-weight: 400;
-  text-align: left;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-.editor-inner {
-  background: #fff;
-  position: relative;
-  border-width: 1px;
-  border-color: gray;
-}
-
 .editor-input {
   min-height: 150px;
   resize: none;
@@ -217,15 +197,6 @@ h1 {
 
 .editor-paragraph:last-child {
   margin-bottom: 0;
-}
-
-.editor-heading-h1 {
-  font-size: 24px;
-  color: rgb(5, 5, 5);
-  font-weight: 400;
-  margin: 0;
-  margin-bottom: 12px;
-  padding: 0;
 }
 
 .editor-heading-h2 {
