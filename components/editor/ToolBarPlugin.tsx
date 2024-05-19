@@ -105,7 +105,7 @@ export default function ToolbarPlugin() {
         onClick={() => {
           editor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
-        className="toolbar-item spaced"
+        className="toolbar-item spaced text-red-600"
         aria-label="Undo"
       >
         <i className="format undo" />

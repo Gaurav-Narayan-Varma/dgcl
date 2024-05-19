@@ -1,13 +1,7 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-// import ContentWrapper from "@/components/content-wrapper";
-import { Suspense } from "react";
-import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useState, useEffect, useRef } from "react";
-import { $generateHtmlFromNodes } from "@lexical/html";
-import { HeadingNode } from "@lexical/rich-text";
 import { Playfair_Display } from "next/font/google";
 import { Montserrat } from "next/font/google";
 
