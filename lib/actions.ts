@@ -6,6 +6,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { db } from "@/db/db";
+import { servicesTable, InsertService } from "@/db/schema";
 
 const FormSchema = z.object({
   id: z.string(),
@@ -15,10 +17,12 @@ const FormSchema = z.object({
   content: z.string({
     invalid_type_error: "Please enter content.",
   }),
-  date: z.string(),
+  editor_state: z.string({
+    invalid_type_error: "Please enter content.",
+  }),
 });
 
-const CreatePost = FormSchema.omit({ id: true, date: true });
+const CreatePost = FormSchema.omit({ id: true });
 
 export type State = {
   errors?: {
@@ -48,11 +52,10 @@ export async function authenticate(
 }
 
 export async function createPost(prevState: State, formData: FormData) {
-  console.log(formData);
-
   const validatedFields = CreatePost.safeParse({
     tagline: formData.get("tagline"),
     content: formData.get("content"),
+    editor_state: formData.get("editor_state"),
   });
 
   if (!validatedFields.success) {
@@ -62,14 +65,12 @@ export async function createPost(prevState: State, formData: FormData) {
     };
   }
   // Prepare data for insertion into the database
-  const { tagline, content } = validatedFields.data;
-  const date = new Date().toISOString().split("T")[0];
+  const { tagline, content, editor_state } = validatedFields.data;
 
   try {
-    await sql`
-        INSERT INTO posts (tagline, content, date)
-        VALUES (${tagline}, ${content}, ${date})
-      `;
+    await db
+      .insert(servicesTable)
+      .values({ name: tagline, html: content, editor_state: editor_state });
   } catch (error) {
     return {
       message: "Database Error: Failed to Create Post.",

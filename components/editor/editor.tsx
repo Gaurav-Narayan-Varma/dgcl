@@ -39,11 +39,14 @@ export default function Editor() {
 
     const { onChange } = props;
     useEffect(() => {
-      editor.update(() => {
-        const htmlString = $generateHtmlFromNodes(editor, null);
-        return onChange(htmlString);
+      editor.registerUpdateListener(({ editorState }) => {
+        editorState.read(() => {
+          const htmlString = $generateHtmlFromNodes(editor, null);
+          setEditorStateInJSON(JSON.stringify(editor.getEditorState()));
+          onChange(htmlString);
+        });
       });
-    });
+    }, [editor, onChange]);
   }
 
   const handleServiceNameChange = (e: any) => {
@@ -55,6 +58,7 @@ export default function Editor() {
     const formData = new FormData();
     formData.append("tagline", serviceName);
     formData.append("content", html);
+    formData.append("editor_state", editorStateInJSON);
 
     dispatch(formData);
   };
@@ -92,7 +96,7 @@ export default function Editor() {
               />
               <HistoryPlugin />
               <MyOnChangePlugin
-                onChange={(htmlString) => {
+                onChange={(htmlString: any): any => {
                   setHtml(htmlString);
                 }}
               />
