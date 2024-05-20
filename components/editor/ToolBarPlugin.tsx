@@ -16,6 +16,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { $createHeadingNode } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
+import { RxFontBold } from "react-icons/rx";
 
 const LowPriority = 1;
 
@@ -90,8 +91,8 @@ export default function ToolbarPlugin() {
       });
     }
     return (
-      <button onClick={myOnClick} type="button">
-        Heading
+      <button className="ml-2 mr-2" onClick={myOnClick} type="button">
+        H1
       </button>
     );
   }
@@ -105,7 +106,7 @@ export default function ToolbarPlugin() {
         onClick={() => {
           editor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
-        className="toolbar-item spaced"
+        className="toolbar-item spaced flex items-center"
         aria-label="Undo"
       >
         <svg
@@ -114,7 +115,7 @@ export default function ToolbarPlugin() {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-6 h-6"
+          className="w-4 h-4"
         >
           <path
             strokeLinecap="round"
@@ -129,7 +130,7 @@ export default function ToolbarPlugin() {
         onClick={() => {
           editor.dispatchCommand(REDO_COMMAND, undefined);
         }}
-        className="toolbar-item"
+        className="toolbar-item flex items-center"
         aria-label="Redo"
       >
         <svg
@@ -138,7 +139,7 @@ export default function ToolbarPlugin() {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-6 h-6"
+          className="w-4 h-4"
         >
           <path
             strokeLinecap="round"
@@ -147,16 +148,20 @@ export default function ToolbarPlugin() {
           />
         </svg>
       </button>
-      <Divider />
+      {/* <Divider /> */}
       <button
         type="button"
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
         }}
-        className={"toolbar-item spaced " + (isBold ? "active" : "")}
+        className={
+          "flex items-center toolbar-item spaced " + (isBold ? "active" : "")
+        }
         aria-label="Format Bold"
       >
-        <i className="format bold" />
+        <div className="">
+          <RxFontBold className="" />
+        </div>
       </button>
       <button
         type="button"
@@ -188,7 +193,7 @@ export default function ToolbarPlugin() {
       >
         <i className="format strikethrough" />
       </button>
-      <Divider />
+      {/* <Divider /> */}
       <button
         type="button"
         onClick={() => {

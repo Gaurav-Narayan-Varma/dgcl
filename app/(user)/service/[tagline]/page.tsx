@@ -12,10 +12,8 @@ const playfair_display_init = playfair_display.className;
 const monserrat_init = monserrat.className;
 
 export default function Page({ params }: { params: { tagline: string } }) {
-  const [htmlString, setHtmlString] = useState("");
-
   const tagline = params.tagline;
-  console.log("slug: " + tagline);
+  const [htmlString, setHtmlString] = useState("");
 
   const fetchData = async () => {
     try {

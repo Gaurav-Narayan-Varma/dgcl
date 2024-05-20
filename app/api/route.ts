@@ -5,7 +5,6 @@ import { unstable_noStore as noStore } from "next/cache";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const tagline = url.searchParams.get("tagline");
-  console.log("tagline: " + tagline);
 
   try {
     const post: any = await sql<PostForm>`
