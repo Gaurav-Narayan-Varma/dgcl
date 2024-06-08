@@ -4,9 +4,11 @@ export type PostForm = {
   content: string;
 };
 
-export type User = {
-  id: string;
+export type ServiceMetaData = {
   name: string;
-  email: string;
-  password: string;
-};
+  slug: string;
+}[];
+
+export type ServiceEditorState = {
+  editor_state: string;
+}[];

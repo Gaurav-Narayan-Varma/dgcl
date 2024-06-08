@@ -21,8 +21,32 @@ import {
 import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { ServiceMetaData } from "@/lib/definitions";
 
 export default function AdminNavBar() {
+  const [serviceData, setServiceData] = useState<ServiceMetaData | null>(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`/api/service-metadata`, {
+        method: "GET",
+        headers: {},
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setServiceData(result);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <main
       id="navbar"
@@ -33,7 +57,8 @@ export default function AdminNavBar() {
         height: "55.03px",
       }}
     >
-      <section id="logo" className="flex flex-col">
+      {/* LOGO */}
+      <Link href="/admin" id="logo" className="flex flex-col">
         <div className="flex flex-row justify-between space-x-1">
           <div className="flex">
             <Image
@@ -48,7 +73,7 @@ export default function AdminNavBar() {
             <div className="font-semibold text-2xl">DGCL Admin</div>
           </div>
         </div>
-      </section>
+      </Link>
       <Sheet>
         <SheetTrigger>
           {" "}
@@ -76,12 +101,16 @@ export default function AdminNavBar() {
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Services</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <NavigationMenuLink href="/demand-generation">
-                    Demand Generation
-                  </NavigationMenuLink>
-                  <NavigationMenuLink href="/">
-                    Lead Generation
-                  </NavigationMenuLink>
+                  {serviceData?.map((serviceObject) => {
+                    return (
+                      <NavigationMenuLink
+                        key={`${serviceObject.name}`}
+                        href={`/admin/edit/${serviceObject.name}`}
+                      >
+                        {serviceObject.name}
+                      </NavigationMenuLink>
+                    );
+                  })}
                   <NavigationMenuLink
                     href="/admin/create-page"
                     className="flex justify-center"

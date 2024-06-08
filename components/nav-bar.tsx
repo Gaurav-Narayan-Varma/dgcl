@@ -3,7 +3,6 @@
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -11,17 +10,46 @@ import {
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
-
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { ServiceMetaData } from "@/lib/definitions";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function NavBar() {
+  const [serviceData, setServiceData] = useState<ServiceMetaData | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const pathname = usePathname();
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`/api/service-metadata`, {
+        method: "GET",
+        headers: {},
+      });
+      if (response.ok) {
+        const result = await response.json();
+        setServiceData(result);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Close drawer on route change
+    setIsDrawerOpen(false);
+  }, [pathname]);
+
   return (
     <main
       id="navbar"
@@ -32,8 +60,9 @@ export default function NavBar() {
         height: "55.03px",
       }}
     >
+      {/* DGCL Logo */}
       <section id="logo" className="flex flex-col">
-        <div className="flex flex-row justify-between space-x-1">
+        <Link href="/" className="flex flex-row justify-between space-x-1">
           <div className="flex">
             <Image
               src="/logo.png"
@@ -57,41 +86,50 @@ export default function NavBar() {
               Fractional excellence
             </div>
           </div>
-        </div>
+        </Link>
       </section>
-      <Sheet>
-        <SheetTrigger>
-          {" "}
-          <section id="hamburger">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-              style={{ color: "#4c40f7" }}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-              />
-            </svg>
-          </section>
+
+      {/* Side Drawer */}
+      <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        {/* Hamburger */}
+        <SheetTrigger asChild>
+          <button
+            onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+            className="focus:outline-none"
+          >
+            <section id="hamburger">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+                style={{ color: "#4c40f7" }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+              </svg>
+            </section>
+          </button>
         </SheetTrigger>
+        {/* Drawer Content */}
         <SheetContent>
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Services</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <NavigationMenuLink href="/demand-generation">
-                    Demand Generation
-                  </NavigationMenuLink>
-                  <NavigationMenuLink href="/">
-                    Lead Generation
-                  </NavigationMenuLink>
+                  {serviceData?.map((serviceObject) => (
+                    <NavigationMenuLink key={serviceObject.slug}>
+                      <Link href={`/service/${serviceObject.slug}`}>
+                        {serviceObject.name}
+                      </Link>
+                    </NavigationMenuLink>
+                  ))}
                 </NavigationMenuContent>
               </NavigationMenuItem>
             </NavigationMenuList>

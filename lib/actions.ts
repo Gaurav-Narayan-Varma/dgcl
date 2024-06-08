@@ -1,13 +1,11 @@
 "use server";
 
 import { z } from "zod";
-import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-import { db } from "@/db/db";
-import { servicesTable, InsertService } from "@/db/schema";
+import { prisma } from "@/db/client";
 
 const FormSchema = z.object({
   id: z.string(),
@@ -67,16 +65,61 @@ export async function createPost(prevState: State, formData: FormData) {
   // Prepare data for insertion into the database
   const { tagline, content, editor_state } = validatedFields.data;
 
+  // Convert to slug
+  function convertToSlug(tagline: string) {
+    return tagline
+      .toLowerCase()
+      .replace(/ /g, "-")
+      .replace(/[^\w-]+/g, "");
+  }
+
+  const slug = convertToSlug(tagline);
+
   try {
-    await db
-      .insert(servicesTable)
-      .values({ name: tagline, html: content, editor_state: editor_state });
+    // await db.insert(servicesTable).values({
+    //   name: tagline,
+    //   slug: slug,
+    //   html: content,
+    //   editor_state: editor_state,
+    // });
   } catch (error) {
     return {
       message: "Database Error: Failed to Create Post.",
     };
   }
 
-  //   revalidatePath('/dashboard/invoices');
+  revalidatePath("/admin", "layout");
   redirect("/admin");
+}
+
+export async function updateService(
+  state: State | undefined,
+  formData: FormData
+): Promise<State> {
+  const validatedFields = CreatePost.safeParse({
+    tagline: formData.get("tagline"),
+    content: formData.get("content"),
+    editor_state: formData.get("editor_state"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to create service.",
+    };
+  }
+
+  // Prepare data for insertion into the database
+  const { tagline, content, editor_state } = validatedFields.data;
+  try {
+    await prisma.service.updateMany({
+      where: { name: decodeURIComponent(tagline) },
+      data: { html: content, editor_state: editor_state },
+    });
+    return { message: "Service updated successfully." };
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to update service.",
+    };
+  }
 }

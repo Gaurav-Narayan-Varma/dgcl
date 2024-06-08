@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Service {
+  id               Int      @id @default(autoincrement())
+  html             String
+  editor_state     String
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  name             String
+  slug             String
+  card_title       String
+  card_description String
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password String @default("$2a$10$cQEFiUaWpFvVVO5AcV3QN.7ohJXxxOPouTxORiZP.mUhupwEpDnUy")
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  name String
+}
+
+model User2 {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password String @default("$2a$10$cQEFiUaWpFvVVO5AcV3QN.7ohJXxxOPouTxORiZP.mUhupwEpDnUy")
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  name String
+}

@@ -108,9 +108,9 @@ export default function Editor() {
 
       {/* Submission */}
       <section className="flex items-center gap-3">
-        <label>Step 3. Publish the page:</label>
-        <Button type="submit" className="text-center w-1/6 self-center">
-          Create page
+        <label>Step 3. Publish the service:</label>
+        <Button type="submit" className="text-center min-w-1/6 self-center">
+          Create Service
         </Button>
       </section>
     </form>

@@ -1,29 +1,27 @@
 import { signOut } from "@/auth";
-import PowerIcon from "@heroicons/react/24/outline/PowerIcon";
-import { headers } from "next/headers";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function AdminHome() {
   return (
-    <div>
+    <main className="flex flex-col flex-grow">
       <div>Admin Home</div>
+      {/* Create Service */}
+      <Link href={"admin/create-page"}>
+        <Button>Create Service</Button>
+      </Link>
+      {/* Logout */}
       <form
         action={async () => {
           "use server";
-          const origin = headers().get("origin");
-          console.log("Headers:", headers());
-          console.log("Origin:", origin);
-
           await signOut({
             redirect: true,
-            redirectTo: `${origin}/login-admin`,
+            redirectTo: "/login-admin",
           });
         }}
       >
-        <button className="...">
-          <PowerIcon className="w-6" />
-          <div className="hidden md:block">Sign Out</div>
-        </button>
+        <Button variant="destructive">Sign Out</Button>
       </form>
-    </div>
+    </main>
   );
 }

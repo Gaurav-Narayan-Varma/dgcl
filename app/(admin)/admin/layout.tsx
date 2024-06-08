@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`relative ${montserrat.className}`}
+        className={`relative ${montserrat.className} min-h-dvh flex flex-col`}
         style={{
           backgroundImage: "url('/pattern-6.png')",
           backgroundColor: "#f0f3f9",
