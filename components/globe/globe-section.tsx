@@ -7,24 +7,24 @@ import { Suspense } from "react";
 import CustomGLBLoader from "@/components/globe/CustomGLBLoader";
 import Model from "@/components/globe/Model";
 
-export default GlobeSection = () => {
+export default function GlobeSection() {
   const [obj, setObj] = useState(null);
   const [target, setTarget] = useState("india");
-  const controlsRef = useRef();
+  const controlsRef = useRef(null);
   return (
-    <>
+    <main id="globe-container" className="h-dvh">
       <Suspense fallback={null}>
         <Canvas
-          style={{ height: "100%", width: "100%", backgroundColor: "black" }}
+          style={{ height: "100%", width: "100%", backgroundColor: "white" }}
           camera={{
             fov: 70,
             position: [0, 0, 1],
           }}
         >
-          <ambientLight intensity={15} />
+          <ambientLight intensity={10} />
           <OrbitControls
             ref={controlsRef}
-            enableZoom={true}
+            enableZoom={false}
             enableRotate={false}
           />
           <CustomGLBLoader setObj={setObj} />
@@ -51,6 +51,6 @@ export default GlobeSection = () => {
           India
         </button>
       </div>
-    </>
+    </main>
   );
-};
+}

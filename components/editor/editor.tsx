@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { useEffect, useRef, useState } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -31,13 +30,12 @@ export default function Editor() {
   const [serviceName, setServiceName] = useState("");
   const [editorStateInJSON, setEditorStateInJSON] = useState<any>("");
   const [html, setHtml] = useState("");
-
   const [state, dispatch] = useFormState(createPost, initialState);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   function MyOnChangePlugin(props: { onChange: (html: any) => void }): any {
-    const [editor] = useLexicalComposerContext();
-
     const { onChange } = props;
+    const [editor] = useLexicalComposerContext();
     useEffect(() => {
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
@@ -59,7 +57,6 @@ export default function Editor() {
     formData.append("tagline", serviceName);
     formData.append("content", html);
     formData.append("editor_state", editorStateInJSON);
-
     dispatch(formData);
   };
 
@@ -70,22 +67,37 @@ export default function Editor() {
     nodes: [HeadingNode],
   };
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <form onSubmit={handleSubmit} className=" flex flex-col self-center w-4/5">
       {/* Tagline */}
-      <section className="flex gap-3 mt-3">
+      <div className="flex gap-3 mt-3">
         <label className={`self-center`}>Step 1. Enter the service name:</label>
-        <Input
-          className="border border-slate-300 self-center w-2/5"
-          onChange={handleServiceNameChange}
-        />
-      </section>
+        <div className="flex flex-col">
+          <Input
+            className="border border-slate-300 self-center w-full"
+            onChange={handleServiceNameChange}
+            ref={inputRef}
+          />
+          {state.errors?.tagline &&
+            state.errors.tagline.map((error: string) => (
+              <p className="text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
+        </div>
+      </div>
 
       {/* Content */}
       <section className="mt-3 flex flex-col  w-full">
         <label className="-mb-3">Step 2. Enter in your content:</label>
         <LexicalComposer initialConfig={initialConfig}>
-          <div className="mt-6 mb-4 rounded-md text-black relative leading-20 font-normal text-left">
+          <div className="mt-6 rounded-md text-black relative leading-20 font-normal text-left">
             <ToolbarPlugin />
 
             <div className="bg-white relative border border-[#808080]">
@@ -100,14 +112,19 @@ export default function Editor() {
                   setHtml(htmlString);
                 }}
               />
-              <AutoFocusPlugin />
             </div>
           </div>
         </LexicalComposer>
+        {state.errors?.editor_state &&
+          state.errors.editor_state.map((error: string) => (
+            <p className="text-sm text-red-500" key={error}>
+              {error}
+            </p>
+          ))}
       </section>
 
       {/* Submission */}
-      <section className="flex items-center gap-3">
+      <section className="flex items-center gap-3 mt-3">
         <label>Step 3. Publish the service:</label>
         <Button type="submit" className="text-center min-w-1/6 self-center">
           Create Service

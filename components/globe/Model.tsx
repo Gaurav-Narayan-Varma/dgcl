@@ -3,9 +3,18 @@
 import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import { useEffect } from "react";
-const Model = ({ obj, target }) => {
-  const { scene, camera } = useThree();
+import React, { MutableRefObject } from "react";
+import { OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
 
+interface ModelProps {
+  obj: THREE.Object3D | null;
+  target: string;
+  controlsRef: MutableRefObject<null>;
+}
+
+const Model: React.FC<ModelProps> = ({ obj, target, controlsRef }) => {
+  const { scene, camera } = useThree();
   useEffect(() => {
     if (target) {
       const targetObject = scene.getObjectByName(target);

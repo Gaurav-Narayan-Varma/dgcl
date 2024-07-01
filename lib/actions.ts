@@ -6,17 +6,18 @@ import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { prisma } from "@/db/client";
+import { format as prettyFormat } from "pretty-format";
 
 const FormSchema = z.object({
   id: z.string(),
-  tagline: z.string({
-    invalid_type_error: "Please enter a tagline.",
+  tagline: z.string().min(1, {
+    message: "Please enter a service name",
   }),
-  content: z.string({
-    invalid_type_error: "Please enter content.",
+  content: z.string().min(1, {
+    message: "Please enter content.",
   }),
-  editor_state: z.string({
-    invalid_type_error: "Please enter content.",
+  editor_state: z.string({ required_error: "Please enter content" }).min(1, {
+    message: "Please enter content",
   }),
 });
 
@@ -50,13 +51,30 @@ export async function authenticate(
 }
 
 export async function createPost(prevState: State, formData: FormData) {
+  console.log("Tagline:", formData.get("tagline"));
+  console.log("content:", formData.get("content"));
+
+  if (formData.get("editor_state") !== null) {
+    console.log(
+      "editor_state:",
+      prettyFormat(JSON.parse(formData.get("editor_state") as string))
+    );
+    console.log(
+      "text:",
+      JSON.parse(formData.get("editor_state") as string)?.root?.children[0]
+        ?.children[0]?.text
+    );
+  }
+
   const validatedFields = CreatePost.safeParse({
     tagline: formData.get("tagline"),
     content: formData.get("content"),
-    editor_state: formData.get("editor_state"),
+    editor_state: JSON.parse(formData.get("editor_state") as string)?.root
+      ?.children[0]?.children[0]?.text,
   });
 
   if (!validatedFields.success) {
+    console.log("INSIDE");
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Missing Fields. Failed to Create Post.",
@@ -82,6 +100,17 @@ export async function createPost(prevState: State, formData: FormData) {
     //   html: content,
     //   editor_state: editor_state,
     // });
+    await prisma.service.create({
+      data: {
+        html: content,
+        editor_state: editor_state,
+        name: tagline,
+        slug: slug,
+        card_title: "poop",
+        card_description: "de woop",
+      },
+    });
+    return { message: "Service created successfully." };
   } catch (error) {
     return {
       message: "Database Error: Failed to Create Post.",
